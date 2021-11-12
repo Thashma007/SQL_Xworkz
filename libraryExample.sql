@@ -117,6 +117,24 @@ select sum(Book_name)as no_of_book_id from Book_details;
 
 select count(Book_id)as no_of_book from Book_details;
 
+-- get the number of book written by author by using group by clause
+
+select Author_name, count(Book_name) from book_details group by Author_name;
+
+select Author_name, count(Book_name) as no_of_bookby_author from book_details group by Author_name;
+
+select Author_name, count(Book_name) from book_details group by Author_name;
+
+select Book_Price, count(Book_Price) as no_in_Price from book_details group by Book_Price;
+
+select *from book_details;
+
+select Publish_year, count(Book_name) as No_of_books_in_year from book_details group by Publish_year;
+
+select Publish_year, count(Book_name) as No_of_books_in_year from book_details where Publish_year>2004 group by Publish_year;
+
+
+
 
 
 
