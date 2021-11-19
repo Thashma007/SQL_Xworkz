@@ -133,11 +133,42 @@ select Publish_year, count(Book_name) as No_of_books_in_year from book_details g
 
 select Publish_year, count(Book_name) as No_of_books_in_year from book_details where Publish_year>2004 group by Publish_year;
 
+-- Get the Number of books written by  each author in each year from your table
+SELECT Author_name,Publish_year,count(Book_name) AS No_of_books_written_by_each_author FROM Book_details GROUP BY Author_name,Publish_year;
+
+-- Get the total sum of the book price in each year sort by year in ascending order from your book detail table
+SELECT Publish_year,SUM(Book_price) AS Total_Sum_of_Book FROM Book_details GROUP BY Publish_year ORDER BY Publish_year;
+
+-- Get the total sum of the book price in each year from your book detail table which sum is having more than 2000.
+SELECT Publish_year,SUM(Book_price) AS Total_Sum_of_Book FROM Book_details GROUP BY Publish_year HAVING Total_Sum_of_Book>2000;
+
+-- GEt the number of books by volume from book detail table which number of books having more than 2
+SELECT Book_volume,count(Book_name) AS No_of_books_in_volume FROM Book_details GROUP BY Book_volume HAVING No_of_books_in_volume>1;
+SELECT Book_volume,count(Book_name) AS No_of_books_in_volume FROM Book_details GROUP BY Book_volume HAVING No_of_books_in_volume>1;
+SELECT MAX(Book_price) FROM Book_details;
+
+-- Get the second highest cost of the book from your table
+SELECT MAX(Book_price) AS Second_Highest_cost_of_Book FROM Book_details WHERE Book_price < (SELECT MAX(Book_price) FROM Book_details);
+
+-- Get the details of book which has second highest cost
+
+SELECT * FROM Book_details WHERE Book_price=(SELECT MAX(Book_price) AS Second_Highest_cost_of_Book FROM Book_details WHERE Book_price < (SELECT MAX(Book_price) FROM Book_details));
+
+-- Get the details of the book which has cost higher than average cost
+SELECT * FROM Books_details WHERE Book_price IN(SELECT Book_price from Book_details WHERE Book_price<(SELECT AVG(Book_price) FROM Books_details));
+
+-- Get the details of the book by book name which has published year greater than 2005
+SELECT * FROM Books_details WHERE Book_name IN(SELECT Book_name from Book_details GROUP BY Publish_year HAVING Publish_year>2005);
 
 
-
-
-
-
-
+-- ROLLBACK can only be used with DML commands(INSERT,UPDATE,DELETE)
+SET AUTOCOMMIT=0;
+SELECT * FROM Book_details;
+DELETE FROM Book_details WHERE BOOK_id=2;
+ROLLBACK;
+DELETE FROM Book_details WHERE BOOK_id=4;
+SAVEPOINT T1;
+DELETE FROM Book_details WHERE BOOK_id=5;
+SAVEPOINT T2;
+ROLLBACK;
 

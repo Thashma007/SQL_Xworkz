@@ -200,3 +200,131 @@ SELECT * FROM  bike_details WHERE Bike_Price IN (SELECT AVG(Bike_Price)FROM bike
 
 SELECT * FROM bike_details WHERE Bike_Model IN((SELECT Bike_Model FROM bike_details GROUP BY Bike_Id HAVING Bike_Id>2));
 SELECT * FROM bike_details WHERE Bike_Id>1; 
+
+
+create database customer;
+use customer;
+create table customer_details(
+customer_id int,
+customer_name varchar(30)not null,
+customer_email varchar(20) unique,
+customer_phone bigint unique,
+customer_address varchar(50),
+primary key (customer_id)
+);
+show tables;
+select*from customer_details;
+use customer;
+select*from customer_details;
+insert into customer_details values (1,'vijay','vijay@gmail.com','6789809008','kolkata');
+insert into customer_details values (2,'varun','varu@gmail.com','6789809009','kolegal');
+insert into customer_details values (3,'lavanya','lavanya@gmail.com','6789809089','mysore');
+insert into customer_details values (4,'vikas','vr@gmail.com','6789809026','banglore');
+insert into customer_details values (5,'charu','ch@gmail.com','67898090988','chennai');
+insert into customer_details values (6,'dia','dia@gmail.com','6789809508','bhopal');
+insert into customer_details values (7,'jay','jay@gmail.com','6789809208','assam');
+insert into customer_details values (8,'avi','avi@gmail.com','6789809058','hydrabad');
+insert into customer_details values (9,'koushi','kh@gmail.com','6789809028','delhi');
+insert into customer_details values (10,'vibha','vibha@gmail.com','6789809038','shimogga');
+
+create table orders(
+order_id int,
+product_name varchar(30) not null,
+order_amount decimal check(order_amount>100),
+order_dateTime datetime,
+customer_ref int,
+primary key(order_id),
+foreign key(customer_ref)references customer_details(customer_id)
+);
+select*from orders;
+select*from customer_details;
+
+insert into orders value(101,'iphone',65000.00,'2021-11-1 10:30:00',1);
+
+insert into orders value(102,'iphone 10',75000.00,'2021-11-2 11:00:00',2);
+
+insert into orders value(103,'camera',45000.00,'2021-11-5 12:05:32',5),(104,'laptop',52000.00,'2021-11-7 12:30:05',6),(105,'cooker',1500.00,'2021-11-6 17:05:32',3),(106,'iron box',1000.00,'2021-11-9 19:06:32',7),(107,'Television',25000.00,'2021-11-5 7:05:32',6),(108,'bag',2000.00,'2021-11-12 19:15:32',5),(109,'washing machine',20000.00,'2021-11-13 21:34:32',9);
+
+insert into orders(order_id,product_name,order_amount,order_dateTime) value(110,'jean',2500.00,'2021-11-8 16:02:00');
+
+select O.order_id,O.product_name,O.order_amount,O.customer_ref,C.customer_id,C.customer_name,C.customer_email from customer_details C inner join orders O on O.customer_ref=C.customer_id;
+
+select * from customer_details C left join orders O on O.customer_ref=C.customer_id;
+
+select * from customer_details C right join orders O on O.customer_ref=C.customer_id;
+
+
+
+
+
+
+
+
+
+
+
+select author_name,min(book_price)as lowest_book_price_by_author from books_details group by author_name having lowest_book_price_by_author<1000;
+
+ select *from books_details;
+ delete from books_details where book_id=2;
+ delete from books_details where book_id=4;
+ rollback;
+
+select max(book_price) from books_details;
+
+select*from books_details where book_price=1800;
+-- dynamic method
+select*from books_details where book_price=(select max(book_price) from books_details);
+
+-- second highest book price from table
+select max(book_price) as second_highest_book_price from books_details where book_price<(select max(book_price) from books_details);
+-- third highest book cost
+
+select max(book_price) as third_highest_book_price from books_details where book_price <
+(select max(book_price) as second_highest_book_price from books_details where book_price<(select max(book_price) from books_details));
+
+
+ -- get highest and second highest cost book details
+  select *from books_details;
+ select*from books_details where book_price in(1800,1500.5);
+ -- alternate method
+
+ select*from books_details where book_price in((select max(book_price)from books_details),1500.5);
+
+ -- dynamic method
+
+ select*from books_details where book_price in((select max(book_price)from books_details),(select max(book_price) as second_highest_book_price from books_details where book_price<(select max(book_price) from books_details))); 
+
+ -- details of book which has price greater than average
+
+ select avg(book_price)from books_details;
+
+  select*from books_details where book_price>(select avg(book_price)from books_details);
+
+  -- details of book by book name which has publish year greater than 2005
+
+  select * from books_details where book_name in((select book_name from books_details group by Publish_Year having Publish_Year>2005));
+
+ CREATE TABLE Books(
+Book_Id TINYINT,
+Book_Name VARCHAR(20),
+Author_Name VARCHAR(30),
+Book_Price FLOAT,
+Publish_Year YEAR,
+Book_Volume CHAR(10)
+);
+select*from books;
+insert into books select*from books_details where book_name in(select book_name from books);
+update books_details set book_price=1700 where book_name in(select book_name from books);
+  select *from books_details;
+  delete from books_details where book_name in(select book_name from books); 
+
+-- user,host from mysql server
+
+create user temp@'localhost';
+
+show grants for temp@'localhost';
+
+grant select,update,delete on books_details to temp@'localhost';
+
+revoke create on books_details from temp@'localhost';
